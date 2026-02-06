@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bel Space</title>
+    <style>
+        body {
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fondo con estrellas */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            z-index: 1;
+        }
+
+        .profile-card {
+            background: url("https://i.ibb.co/0jbrFPch/20260205-235442.jpg") top right no-repeat;
+            background-size: cover;
+            border-radius: 7px;
+            width: 320px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5),
+                        0 0 50px rgba(255, 255, 255, 0.3),
+                        0 0 75px rgba(255, 255, 255, 0.2),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-card__door {
+            width: 640px;
+            height: 200px;
+            left: 0;
+            position: relative;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .profile-card__door:hover {
+            left: -320px;
+            box-shadow: inset 320px 0 350px rgba(0, 0, 0, 0.8);
+        }
+
+        .profile-card__front,
+        .profile-card__back {
+            text-align: center;
+            width: 320px;
+            float: left;
+            color: white;
+            padding-top: 10%;
+            position: relative;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            font-size: 0.9em;
+        }
+
+        .profile-card__front {
+            visibility: hidden;
+        }
+
+        .profile-card__avatar {
+            border: 3px solid white;
+            border-radius: 7px;
+            width: 72px;
+            height: 72px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            display: none;
+        }
+
+        .profile-card__front p {
+            display: none;
+        }
+
+        .profile-card__back p:first-child {
+            margin: 20px 15px 15px 15px;
+            font-size: 0.85em;
+            line-height: 1.9;
+            letter-spacing: 0.5px;
+            padding: 0 15px;
+            text-align: center;
+        }
+
+        .profile-card__back p:last-child {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            font-size: 0.8em;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+            padding: 0 15px;
+            text-align: center;
+        }
+
+        /* Contenedor de corazones */
+        .heart-icons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            width: auto;
+            height: auto;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .heart-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            width: auto;
+        }
+
+        .heart-link:hover {
+            transform: translateY(-8px);
+        }
+
+        .heart-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .heart-link:hover .heart-icon {
+            border-color: #ffffff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+        }
+
+        /* Icono de corazón perfecto */
+        .heart-icon::before {
+            content: "❤";
+            position: absolute;
+            font-size: 26px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        /* Efecto de pulso en hover */
+        .heart-link:hover .heart-icon::before {
+            color: #ff4d6d;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.9);
+            transform: scale(1.2);
+        }
+
+        .heart-link:hover .heart-icon {
+            animation: heartbeat 0.8s ease-in-out;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .profile-card {
+                width: 290px;
+                height: 180px;
+            }
+            
+            .heart-icons {
+                gap: 18px;
+            }
+            
+            .heart-icon {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .heart-icon::before {
+                font-size: 22px;
+            }
+            
+            .profile-card__back p:first-child {
+                margin: 15px 12px 12px 12px;
+                padding: 0 12px;
+                font-size: 0.82em;
+                line-height: 1.8;
+            }
+            
+            .profile-card__back p:last-child {
+                bottom: 15px;
+                padding: 0 12px;
+            }
+        }
+
+ /* Botón flotante MUSICA */
+#music-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Neón blanco permanente */
+    box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.7),
+        inset 0 0 5px rgba(255, 255, 255, 0.3);
+    /* Latido infinito */
+    animation: pulse 2s infinite ease-in-out;
+    transition: all 0.3s;
+}
+
+/* Animación de pulsación */
+@keyframes pulse {
+    0% { 
+        transform: scale(1);
+        box-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.7),
+            inset 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 
+            0 0 15px rgba(255, 255, 255, 0.9),
+            inset 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    100% { 
+        transform: scale(1);
+        box-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.7),
+            inset 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Efecto al pasar el mouse (brillo intenso blanco) */
+#music-toggle:hover {
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 1),
+        inset 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+/* Efecto al hacer clic (onda expansiva blanca) */
+#music-toggle:active {
+    animation: pulse-click 0.5s;
+}
+
+@keyframes pulse-click {
+    0% { 
+        transform: scale(0.9);
+        box-shadow: 
+            0 0 5px rgba(255, 255, 255, 0.5),
+            inset 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+    50% { 
+        transform: scale(1.15);
+        box-shadow: 
+            0 0 25px rgba(255, 255, 255, 1),
+            inset 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+    100% { 
+        transform: scale(1);
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Fondo con estrellas -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-card__door">
+                <div class="profile-card__front">
+                    <!-- Este contenido está oculto -->
+                    <img src="https://secure.gravatar.com/avatar/e46251f527e641729a2047aec03e66a2?size=72&default=retro" alt="" class="profile-card__avatar">
+                    <p>@andreruffert</p>
+                </div>
+                <div class="profile-card__back">
+                    <p>𝖢𝖺𝗎𝗌𝖾 𝗍𝗁𝖾𝗋𝖾’𝗌 𝗍𝗁𝗂𝗌 𝗍𝗎𝗇𝖾 𝗂 𝖿𝗈𝗎𝗇𝖽 𝗍𝗁𝖺𝗍 𝗆𝖺𝗄𝖾𝗌 𝗆𝖾 𝗍𝗁𝗂𝗇𝗄 𝗈𝖿 𝗒𝗈𝗎 𝗌𝗈𝗆𝖾𝗁𝗈𝗐 𝖺𝗇𝖽 𝗂 𝗉𝗅𝖺𝗒 𝗂𝗍 𝗈𝗇 𝗋𝖾𝗉𝖾𝖺𝗍.</p>
+<p></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="heart-icons">
+            <a href="https://ejemplo1.com" target="_blank" class="heart-link">
+                <div class="heart-icon"></div>
+            </a>
+            
+            <a href="https://ejemplo2.com" target="_blank" class="heart-link">
+                <div class="heart-icon"></div>
+            </a>
+            
+            <a href="https://ejemplo3.com" target="_blank" class="heart-link">
+                <div class="heart-icon"></div>
+            </a>
+            
+            <a href="https://ejemplo4.com" target="_blank" class="heart-link">
+                <div class="heart-icon"></div>
+            </a>
+            
+            <a href="https://ejemplo5.com" target="_blank" class="heart-link">
+                <div class="heart-icon"></div>
+            </a>
+        </div>
+    </div>
+
+<!-- Botón flotante -->
+    <button id="music-toggle">🔇</button>
+    
+    <!-- Reproductor oculto -->
+    <audio id="bg-music" loop>
+        <source src="belen.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Crear estrellas dinámicamente
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 120;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 4 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Posición aleatoria
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Duración de animación aleatoria
+                const duration = Math.random() * 4 + 1;
+                star.style.animationDuration = `${duration}s`;
+                
+                // Retraso aleatorio
+                const delay = Math.random() * 3;
+                star.style.animationDelay = `${delay}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Inicializar estrellas cuando la página cargue
+        document.addEventListener('DOMContentLoaded', createStars);
+    </script>
+
+ <script>
+        const music = document.getElementById('bg-music');
+        const toggleBtn = document.getElementById('music-toggle');
+        let isPlaying = false;
+
+        // Intentar autoplay (puede fallar)
+        music.play().then(() => {
+            isPlaying = true;
+            toggleBtn.textContent = '❚❚';
+        }).catch(() => {
+            isPlaying = false;
+            toggleBtn.textContent = '▶';
+        });
+
+        // Control manual
+        toggleBtn.addEventListener('click', () => {
+            isPlaying ? music.pause() : music.play();
+            isPlaying = !isPlaying;
+            toggleBtn.textContent = isPlaying ? '❚❚' : '▶';
+        });
+    </script>
+
+  <script>
+// Bloquear clic derecho
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// Bloquear Ctrl+U, Ctrl+S, Ctrl+Shift+I, Ctrl+Shift+J, F12
+document.addEventListener('keydown', event => {
+  if (
+    event.ctrlKey && (
+      event.key === 'u' || 
+      event.key === 's' || 
+      event.key === 'U' || 
+      event.key === 'S'
+    )
+  ) {
+    event.preventDefault();
+  }
+  if (
+    (event.ctrlKey && event.shiftKey && (
+      event.key === 'I' || event.key === 'i' || 
+      event.key === 'J' || event.key === 'j'
+    )) ||
+    event.key === 'F12'
+  ) {
+    event.preventDefault();
+  }
+});
+</script>
+</body>
+</html>
